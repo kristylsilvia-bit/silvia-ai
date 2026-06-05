@@ -129,32 +129,37 @@ export interface GeneratedImage {
   caption: string;
 }
 
-/** Generate an image via Imagen 3. Returns a data URL + empty caption. */
+/** Generate an image (gemini-3.1-flash-image). Returns a data URL + optional caption. */
 export async function generateImage(
-  _apiModel: string,
+  apiModel: string,
   prompt: string,
-  _attachments: Attachment[],
+  attachments: Attachment[],
   signal: AbortSignal,
 ): Promise<GeneratedImage> {
-  // Imagen 3 uses a separate v1beta endpoint with its own request/response shape.
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`;
+  const url = `${API_BASE}/${apiModel}:generateContent?key=${GEMINI_API_KEY}`;
   const res = await fetch(url, {
     method: "POST",
     signal,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      instances: [{ prompt }],
-      parameters: { sampleCount: 1 },
+      contents: [{ role: "user", parts: buildParts(prompt, attachments) }],
+      generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
     }),
   });
   if (!res.ok) throw await apiError(res);
 
   const data = await res.json();
-  // Response: { predictions: [{ bytesBase64Encoded, mimeType }] }
-  const pred = data?.predictions?.[0];
-  if (!pred?.bytesBase64Encoded) {
-    throw new Error("The model returned no image. Try rephrasing your prompt.");
+  const parts = data?.candidates?.[0]?.content?.parts ?? [];
+  let image: string | null = null;
+  let caption = "";
+  for (const p of parts) {
+    const inl = p.inlineData ?? p.inline_data;
+    if (inl?.data) {
+      const mime = inl.mimeType ?? inl.mime_type ?? "image/png";
+      image = `data:${mime};base64,${inl.data}`;
+    }
+    if (p.text) caption += p.text;
   }
-  const mime = pred.mimeType ?? "image/png";
-  return { image: `data:${mime};base64,${pred.bytesBase64Encoded}`, caption: "" };
+  if (!image) throw new Error("The model returned no image. Try rephrasing your prompt.");
+  return { image, caption };
 }
