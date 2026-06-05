@@ -129,37 +129,32 @@ export interface GeneratedImage {
   caption: string;
 }
 
-/** Generate an image (Nano Banana 2). Returns a data URL + optional caption. */
+/** Generate an image via Imagen 3. Returns a data URL + empty caption. */
 export async function generateImage(
-  apiModel: string,
+  _apiModel: string,
   prompt: string,
-  attachments: Attachment[],
+  _attachments: Attachment[],
   signal: AbortSignal,
 ): Promise<GeneratedImage> {
-  const url = `${API_BASE}/${apiModel}:generateContent?key=${GEMINI_API_KEY}`;
+  // Imagen 3 uses a separate v1beta endpoint with its own request/response shape.
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${GEMINI_API_KEY}`;
   const res = await fetch(url, {
     method: "POST",
     signal,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      contents: [{ role: "user", parts: buildParts(prompt, attachments) }],
-      generationConfig: { responseModalities: ["IMAGE", "TEXT"] },
+      instances: [{ prompt }],
+      parameters: { sampleCount: 1 },
     }),
   });
   if (!res.ok) throw await apiError(res);
 
   const data = await res.json();
-  const parts = data?.candidates?.[0]?.content?.parts ?? [];
-  let image: string | null = null;
-  let caption = "";
-  for (const p of parts) {
-    const inl = p.inlineData ?? p.inline_data;
-    if (inl?.data) {
-      const mime = inl.mimeType ?? inl.mime_type ?? "image/png";
-      image = `data:${mime};base64,${inl.data}`;
-    }
-    if (p.text) caption += p.text;
+  // Response: { predictions: [{ bytesBase64Encoded, mimeType }] }
+  const pred = data?.predictions?.[0];
+  if (!pred?.bytesBase64Encoded) {
+    throw new Error("The model returned no image. Try rephrasing your prompt.");
   }
-  if (!image) throw new Error("The model returned no image. Try rephrasing your prompt.");
-  return { image, caption };
+  const mime = pred.mimeType ?? "image/png";
+  return { image: `data:${mime};base64,${pred.bytesBase64Encoded}`, caption: "" };
 }
