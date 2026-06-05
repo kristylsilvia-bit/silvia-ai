@@ -35,7 +35,12 @@
   />
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div id="app-prerender" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;" aria-hidden="true">
+      <h1>Silvia AI</h1>
+      <p>Silvia AI — a premium multi-model Gemini chat studio.</p>
+    </div>
+  </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>
