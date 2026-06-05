@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
 import App from "./App";
+import { AuthProvider } from "./contexts/AuthContext";
 
 // Syntax-highlighting theme (replaces the prototype's CDN <link>).
 import "highlight.js/styles/github-dark.css";
@@ -13,6 +14,8 @@ if (!container) throw new Error('Root element "#root" not found');
 
 createRoot(container).render(
   <StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </StrictMode>,
 );

@@ -1,12 +1,17 @@
 import type { Chat, ModelId, Theme } from "../types";
 
-const LS_CHATS = "silvia.chats.v1";
+const LS_CHATS_ANON = "silvia.chats.v1";
 const LS_THEME = "silvia.theme";
 const LS_MODEL = "silvia.model";
+const LS_FREE_CHATS = "silvia.freeChats";
 
-export function loadChats(): Chat[] {
+function chatsKey(uid: string | null): string {
+  return uid ? `silvia.chats.u.${uid}` : LS_CHATS_ANON;
+}
+
+export function loadChats(uid: string | null = null): Chat[] {
   try {
-    const raw = localStorage.getItem(LS_CHATS);
+    const raw = localStorage.getItem(chatsKey(uid));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? (parsed as Chat[]) : [];
@@ -15,11 +20,24 @@ export function loadChats(): Chat[] {
   }
 }
 
-export function saveChats(chats: Chat[]): void {
+export function saveChats(chats: Chat[], uid: string | null = null): void {
   try {
-    localStorage.setItem(LS_CHATS, JSON.stringify(chats));
+    localStorage.setItem(chatsKey(uid), JSON.stringify(chats));
   } catch {
-    /* quota or privacy mode — fail silently, same as the prototype */
+    /* quota or privacy mode — fail silently */
+  }
+}
+
+/** How many free chats this anonymous session has used. */
+export function getFreeChatsUsed(): number {
+  return parseInt(localStorage.getItem(LS_FREE_CHATS) ?? "0", 10);
+}
+
+export function incrementFreeChats(): void {
+  try {
+    localStorage.setItem(LS_FREE_CHATS, String(getFreeChatsUsed() + 1));
+  } catch {
+    /* ignore */
   }
 }
 

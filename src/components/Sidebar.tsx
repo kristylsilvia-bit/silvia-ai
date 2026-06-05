@@ -1,4 +1,6 @@
 import type { Chat } from "../types";
+import { useAuth } from "../contexts/AuthContext";
+import { logOut } from "../lib/firebase";
 import { ChatIcon, PlusIcon, SparkIcon, SunIcon, TrashIcon, XIcon } from "./icons";
 
 interface SidebarProps {
@@ -9,6 +11,7 @@ interface SidebarProps {
   onDeleteChat: (id: string) => void;
   onToggleTheme: () => void;
   onClearAll: () => void;
+  onSignIn: () => void;
 }
 
 export default function Sidebar({
@@ -19,7 +22,9 @@ export default function Sidebar({
   onDeleteChat,
   onToggleTheme,
   onClearAll,
+  onSignIn,
 }: SidebarProps) {
+  const { user } = useAuth();
   return (
     <aside className="sidebar">
       <div className="sidebar-inner">
@@ -87,6 +92,26 @@ export default function Sidebar({
             <TrashIcon />
             <span>Clear all chats</span>
           </button>
+          {user ? (
+            <div className="sb-account">
+              <div className="sb-account-info">
+                <span className="sb-avatar">
+                  {user.photoURL
+                    ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" />
+                    : user.email?.[0]?.toUpperCase() ?? "?"}
+                </span>
+                <span className="sb-account-email">{user.displayName || user.email}</span>
+              </div>
+              <button className="sb-signout" onClick={() => logOut()} title="Sign out">
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <button className="sb-row sb-signin" onClick={onSignIn}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Sign in</span>
+            </button>
+          )}
         </div>
       </div>
     </aside>

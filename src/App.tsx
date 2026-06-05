@@ -5,16 +5,27 @@ import { MODELS } from "./config/models";
 import { buildContents, generateImage, hasApiKey, streamGenerate } from "./lib/gemini";
 import { readFiles } from "./lib/files";
 import { routeModel } from "./lib/routing";
-import { loadChats, loadModel, saveChats, saveModel } from "./lib/storage";
+import {
+  loadChats,
+  loadModel,
+  saveChats,
+  saveModel,
+  getFreeChatsUsed,
+  incrementFreeChats,
+} from "./lib/storage";
 import { isMobile, uid } from "./lib/utils";
 import { useTheme } from "./hooks/useTheme";
+import { useAuth } from "./contexts/AuthContext";
 
 import Aurora from "./components/Aurora";
+import AuthScreen from "./components/AuthScreen";
 import ChatView from "./components/ChatView";
 import Composer from "./components/Composer";
 import Sidebar from "./components/Sidebar";
 import Toast, { type ToastState } from "./components/Toast";
 import TopBar from "./components/TopBar";
+
+const FREE_CHAT_LIMIT = 5;
 
 const blankChat = (): Chat => ({
   id: uid(),
@@ -27,10 +38,14 @@ type MessagePatch = Partial<Message> | ((m: Message) => Partial<Message>);
 
 export default function App() {
   const [, toggleTheme] = useTheme();
+  const { user, loading: authLoading } = useAuth();
 
-  const [chats, setChats] = useState<Chat[]>(() => loadChats());
+  const [chats, setChats] = useState<Chat[]>(() => loadChats(null));
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<ModelId>(() => loadModel("auto"));
+
+  const [showAuth, setShowAuth] = useState(false);
+  const [trialExpired, setTrialExpired] = useState(false);
 
   const [input, setInput] = useState("");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -47,6 +62,25 @@ export default function App() {
   const abortRef = useRef<AbortController | null>(null);
   const toastTimer = useRef<number | undefined>(undefined);
   const didInit = useRef(false);
+  const prevUidRef = useRef<string | null | undefined>(undefined);
+
+  /* ---- reload chats when auth state changes (uid switches) ---- */
+  useEffect(() => {
+    if (authLoading) return;
+    const uid = user?.uid ?? null;
+    if (prevUidRef.current === uid) return;
+    prevUidRef.current = uid;
+    const loaded = loadChats(uid);
+    if (loaded.length) {
+      setChats(loaded);
+      setActiveId(loaded[0].id);
+    } else {
+      const c = blankChat();
+      setChats([c]);
+      setActiveId(c.id);
+    }
+    didInit.current = true;
+  }, [user, authLoading]);
 
   /* ---- one-time init: open the first chat or create one ---- */
   useEffect(() => {
@@ -63,8 +97,8 @@ export default function App() {
 
   /* ---- persistence (skipped mid-stream to avoid thrashing localStorage) ---- */
   useEffect(() => {
-    if (!streaming) saveChats(chats);
-  }, [chats, streaming]);
+    if (!streaming) saveChats(chats, user?.uid ?? null);
+  }, [chats, streaming, user]);
 
   useEffect(() => {
     saveModel(selectedModel);
@@ -198,6 +232,17 @@ export default function App() {
       showToast("Add your Gemini API key in .env (VITE_GEMINI_API_KEY)", true);
     }
 
+    // free trial gate — anonymous users get FREE_CHAT_LIMIT chats
+    if (!user) {
+      const used = getFreeChatsUsed();
+      if (used >= FREE_CHAT_LIMIT) {
+        setTrialExpired(true);
+        setShowAuth(true);
+        return;
+      }
+      incrementFreeChats();
+    }
+
     // resolve the target chat (create one if none is active)
     let chatId = activeId;
     let baseChats = chats;
@@ -321,9 +366,27 @@ export default function App() {
     (sidebarCollapsed ? " sidebar-collapsed" : "") +
     (sidebarOpen ? " sidebar-open" : "");
 
+  if (authLoading) {
+    return (
+      <div className="auth-loading">
+        <div className="auth-spinner" />
+      </div>
+    );
+  }
+
   return (
     <>
       <Aurora />
+
+      {showAuth && (
+        <AuthScreen
+          trialExpired={trialExpired}
+          onClose={() => {
+            setShowAuth(false);
+            setTrialExpired(false);
+          }}
+        />
+      )}
 
       <div className={appClass}>
         <Sidebar
@@ -340,6 +403,7 @@ export default function App() {
           onDeleteChat={deleteChat}
           onToggleTheme={toggleTheme}
           onClearAll={clearAllChats}
+          onSignIn={() => { setTrialExpired(false); setShowAuth(true); }}
         />
 
         <div className="backdrop" onClick={closeSidebarMobile} />
