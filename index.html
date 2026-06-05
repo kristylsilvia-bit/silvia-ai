@@ -36,9 +36,14 @@
 </head>
 <body>
   <div id="root">
-    <div id="app-prerender" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;" aria-hidden="true">
-      <h1>Silvia AI</h1>
-      <p>Silvia AI — a premium multi-model Gemini chat studio.</p>
+    <div id="app-splash" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#0A0B12;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;">
+      <svg width="48" height="48" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C5CFF"/><stop offset="0.5" stop-color="#5B8DEF"/><stop offset="1" stop-color="#2DD4BF"/></linearGradient></defs>
+        <rect width="512" height="512" rx="112" fill="url(#g)"/>
+        <path d="M256 100l52 118 128 12-96 86 28 126L256 376l-112 66 28-126-96-86 128-12z" fill="#fff"/>
+      </svg>
+      <h1 style="margin:16px 0 4px;font-size:28px;font-weight:800;background:linear-gradient(135deg,#7C5CFF,#5B8DEF,#2DD4BF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Silvia AI</h1>
+      <p style="margin:0;font-size:14px;color:#888;">Loading…</p>
     </div>
   </div>
   <script type="module" src="/src/main.tsx"></script>
