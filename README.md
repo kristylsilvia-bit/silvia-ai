@@ -24,6 +24,11 @@ handoff bundle (brief + chat transcript) lives in [`silvia-ai/`](./silvia-ai).
 - **Responsive** — collapsible desktop sidebar, mobile drawer with backdrop.
 - **Dark mode by default** with a light toggle.
 
+
+## Native iOS app
+
+A complete SwiftUI iOS 17+ app is included in [`SilviaAI-iOS/`](./SilviaAI-iOS). Open [`SilviaAI-iOS/SilviaAI.xcodeproj`](./SilviaAI-iOS/SilviaAI.xcodeproj) in Xcode, add your Gemini API key to `SilviaAI/Resources/Config.plist`, and run on an iPhone simulator or real iPhone. See [`SilviaAI-iOS/README.md`](./SilviaAI-iOS/README.md) for step-by-step Xcode instructions.
+
 ## Quick start
 
 ```bash

@@ -36,3 +36,16 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Xcode / iOS
+DerivedData/
+build/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
