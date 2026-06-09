@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		008483EA6019426CA1FD379B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC71CA1D4DE43E4A5AADE5F /* WelcomeView.swift */; };
+		0C1DE2CE84844E3880C18CD0 /* Config.example.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3125452DC844CB89A4F8523 /* Config.example.plist */; };
+		1B017C2541174F0AA8672BD8 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = B69FDF9A79644FA29073785F /* Config.plist */; };
+		2BD1E092E7F848D28EFDB67B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0313BE19C834709B12E2882 /* LaunchScreen.storyboard */; };
+		4CB6456ECE6B46DCB3C07C00 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8279FF3D0A748C5A99ED683 /* SettingsView.swift */; };
+		4F05A239DB6B4CB8B13F1669 /* MessageBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5AF8F4ED5C1438487012D99 /* MessageBubbleView.swift */; };
+		55C497485302445B827849C3 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571E8A360959470B868D9204 /* ChatViewModel.swift */; };
+		62B581403FE340A4A66D5C40 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F264D0384EC0474A9CD5F499 /* Constants.swift */; };
+		62FAF753B7204C49ACA4AE9F /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CAC12088CF40A198F5ECD7 /* SettingsViewModel.swift */; };
+		64E29C2C82844978AB4A9A92 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57AB16F97F10452C8F49C9C3 /* ChatView.swift */; };
+		67CDB8048C1043EEB40D2A9F /* ChatRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2B6BEAD96E472FB4C629C7 /* ChatRole.swift */; };
+		6B3ED8251F7C49B6B0285C96 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6DEA28BAB104FA29DB49D33 /* APIClient.swift */; };
+		712958580E474DAF862B68B8 /* ChatStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E60EE8383E4EE6B4D1FA14 /* ChatStorageService.swift */; };
+		811D2869ACD84727A0E0D458 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE949E4048EB4DA98B383DBC /* Haptics.swift */; };
+		9079597103C14BB39B45A5D3 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EFB866C07374D2E8384BA3E /* Theme.swift */; };
+		9F2AAFB03E084DA2AC37F1CE /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1ED40987E5543CBB655594D /* ChatMessage.swift */; };
+		A1B2C3D4E5F6478899AABB02 /* AuthUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478899AABB01 /* AuthUser.swift */; };
+		A1B2C3D4E5F6478899AABB04 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478899AABB03 /* FirebaseAuthService.swift */; };
+		A1B2C3D4E5F6478899AABB06 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478899AABB05 /* AuthViewModel.swift */; };
+		A1B2C3D4E5F6478899AABB08 /* AuthScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478899AABB07 /* AuthScreenView.swift */; };
+		A3622D48E7A04DA3BA835A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8565554ADB1248A19E0FA9F7 /* Assets.xcassets */; };
+		AA51C714A88B4712A30078B5 /* SilviaAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9766C095824C2D80B9E35E /* SilviaAIApp.swift */; };
+		B4E5414AE0A044C183E3A757 /* SpeechService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 987DE5BB737F48439D74C6A0 /* SpeechService.swift */; };
+		BA565B754F4A4F7DACADE2E6 /* ComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 193084446FA540ACA9A15723 /* ComposerView.swift */; };
+		C3A82BE0D7404B58BD38DE6F /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B40368756E4BA5A5B39E08 /* AppSettings.swift */; };
+		FADEB20F087343419FB5BBC6 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2578226D1904201B80C67C8 /* AIService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		193084446FA540ACA9A15723 /* ComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComposerView.swift; sourceTree = "<group>"; };
+		20E60EE8383E4EE6B4D1FA14 /* ChatStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStorageService.swift; sourceTree = "<group>"; };
+		30B40368756E4BA5A5B39E08 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		571E8A360959470B868D9204 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		57AB16F97F10452C8F49C9C3 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		6D2B6BEAD96E472FB4C629C7 /* ChatRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRole.swift; sourceTree = "<group>"; };
+		7EFB866C07374D2E8384BA3E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		8565554ADB1248A19E0FA9F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		987DE5BB737F48439D74C6A0 /* SpeechService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechService.swift; sourceTree = "<group>"; };
+		9E9766C095824C2D80B9E35E /* SilviaAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilviaAIApp.swift; sourceTree = "<group>"; };
+		A2578226D1904201B80C67C8 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		A907E49EABC444EB91D5A44F /* SilviaAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SilviaAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6478899AABB01 /* AuthUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthUser.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6478899AABB03 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6478899AABB05 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6478899AABB07 /* AuthScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthScreenView.swift; sourceTree = "<group>"; };
+		ABC71CA1D4DE43E4A5AADE5F /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		B0313BE19C834709B12E2882 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B1ED40987E5543CBB655594D /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		B69FDF9A79644FA29073785F /* Config.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		B7CAC12088CF40A198F5ECD7 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		B8279FF3D0A748C5A99ED683 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BE949E4048EB4DA98B383DBC /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		C8FE21DD39E34EEBB8411AB0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D5AF8F4ED5C1438487012D99 /* MessageBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBubbleView.swift; sourceTree = "<group>"; };
+		D6DEA28BAB104FA29DB49D33 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		F264D0384EC0474A9CD5F499 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F3125452DC844CB89A4F8523 /* Config.example.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Config.example.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4963DB3563D14DBD96BD9055 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		335DBDC6020946399DADCED6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				9E9766C095824C2D80B9E35E /* SilviaAIApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		3558C48030BC47B1ADC4F1C1 /* SilviaAI */ = {
+			isa = PBXGroup;
+			children = (
+				335DBDC6020946399DADCED6 /* App */,
+				50360B37B403405A88C319D5 /* Views */,
+				DBD5796657D64F82B7C5115E /* ViewModels */,
+				DE1B3DF7003948BAA83CF39D /* Models */,
+				AA85330A6E5C4497BC318CDA /* Services */,
+				A72C97169A054CC3BFFED9CD /* Resources */,
+				B460B45C45BE4552BD74B490 /* Utilities */,
+			);
+			path = SilviaAI;
+			sourceTree = "<group>";
+		};
+		50360B37B403405A88C319D5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				57AB16F97F10452C8F49C9C3 /* ChatView.swift */,
+				A1B2C3D4E5F6478899AABB07 /* AuthScreenView.swift */,
+				193084446FA540ACA9A15723 /* ComposerView.swift */,
+				D5AF8F4ED5C1438487012D99 /* MessageBubbleView.swift */,
+				B8279FF3D0A748C5A99ED683 /* SettingsView.swift */,
+				ABC71CA1D4DE43E4A5AADE5F /* WelcomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		90BABB0380CF4AAFACEB61FA = {
+			isa = PBXGroup;
+			children = (
+				3558C48030BC47B1ADC4F1C1 /* SilviaAI */,
+				9C77B41E2F544C3B9F216736 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9C77B41E2F544C3B9F216736 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A907E49EABC444EB91D5A44F /* SilviaAI.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A72C97169A054CC3BFFED9CD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8565554ADB1248A19E0FA9F7 /* Assets.xcassets */,
+				F3125452DC844CB89A4F8523 /* Config.example.plist */,
+				B69FDF9A79644FA29073785F /* Config.plist */,
+				C8FE21DD39E34EEBB8411AB0 /* Info.plist */,
+				B0313BE19C834709B12E2882 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		AA85330A6E5C4497BC318CDA /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A2578226D1904201B80C67C8 /* AIService.swift */,
+				D6DEA28BAB104FA29DB49D33 /* APIClient.swift */,
+				A1B2C3D4E5F6478899AABB03 /* FirebaseAuthService.swift */,
+				20E60EE8383E4EE6B4D1FA14 /* ChatStorageService.swift */,
+				987DE5BB737F48439D74C6A0 /* SpeechService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B460B45C45BE4552BD74B490 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F264D0384EC0474A9CD5F499 /* Constants.swift */,
+				BE949E4048EB4DA98B383DBC /* Haptics.swift */,
+				7EFB866C07374D2E8384BA3E /* Theme.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		DBD5796657D64F82B7C5115E /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				571E8A360959470B868D9204 /* ChatViewModel.swift */,
+				B7CAC12088CF40A198F5ECD7 /* SettingsViewModel.swift */,
+				A1B2C3D4E5F6478899AABB05 /* AuthViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		DE1B3DF7003948BAA83CF39D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				30B40368756E4BA5A5B39E08 /* AppSettings.swift */,
+				A1B2C3D4E5F6478899AABB01 /* AuthUser.swift */,
+				B1ED40987E5543CBB655594D /* ChatMessage.swift */,
+				6D2B6BEAD96E472FB4C629C7 /* ChatRole.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		916A919759FB4EB0BC67A4F2 /* SilviaAI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41616EF9AD5B4D25B3C03578 /* Build configuration list for PBXNativeTarget "SilviaAI" */;
+			buildPhases = (
+				D4575BCAFD0543F19F27E9E6 /* Sources */,
+				4963DB3563D14DBD96BD9055 /* Frameworks */,
+				9A9855D5AAB9426099EE05F4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SilviaAI;
+			productName = SilviaAI;
+			productReference = A907E49EABC444EB91D5A44F /* SilviaAI.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC15A3C7251647CC9FAA7948 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					916A919759FB4EB0BC67A4F2 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 5F610D444C5B469C8532E407 /* Build configuration list for PBXProject "SilviaAI" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 90BABB0380CF4AAFACEB61FA;
+			productRefGroup = 9C77B41E2F544C3B9F216736 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				916A919759FB4EB0BC67A4F2 /* SilviaAI */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9A9855D5AAB9426099EE05F4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3622D48E7A04DA3BA835A9F /* Assets.xcassets in Resources */,
+				2BD1E092E7F848D28EFDB67B /* LaunchScreen.storyboard in Resources */,
+				1B017C2541174F0AA8672BD8 /* Config.plist in Resources */,
+				0C1DE2CE84844E3880C18CD0 /* Config.example.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D4575BCAFD0543F19F27E9E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA51C714A88B4712A30078B5 /* SilviaAIApp.swift in Sources */,
+				C3A82BE0D7404B58BD38DE6F /* AppSettings.swift in Sources */,
+				9F2AAFB03E084DA2AC37F1CE /* ChatMessage.swift in Sources */,
+				67CDB8048C1043EEB40D2A9F /* ChatRole.swift in Sources */,
+				FADEB20F087343419FB5BBC6 /* AIService.swift in Sources */,
+				6B3ED8251F7C49B6B0285C96 /* APIClient.swift in Sources */,
+				712958580E474DAF862B68B8 /* ChatStorageService.swift in Sources */,
+				B4E5414AE0A044C183E3A757 /* SpeechService.swift in Sources */,
+				62B581403FE340A4A66D5C40 /* Constants.swift in Sources */,
+				811D2869ACD84727A0E0D458 /* Haptics.swift in Sources */,
+				9079597103C14BB39B45A5D3 /* Theme.swift in Sources */,
+				55C497485302445B827849C3 /* ChatViewModel.swift in Sources */,
+				62FAF753B7204C49ACA4AE9F /* SettingsViewModel.swift in Sources */,
+				64E29C2C82844978AB4A9A92 /* ChatView.swift in Sources */,
+				BA565B754F4A4F7DACADE2E6 /* ComposerView.swift in Sources */,
+				4F05A239DB6B4CB8B13F1669 /* MessageBubbleView.swift in Sources */,
+				4CB6456ECE6B46DCB3C07C00 /* SettingsView.swift in Sources */,
+				008483EA6019426CA1FD379B /* WelcomeView.swift in Sources */,
+				A1B2C3D4E5F6478899AABB02 /* AuthUser.swift in Sources */,
+				A1B2C3D4E5F6478899AABB04 /* FirebaseAuthService.swift in Sources */,
+				A1B2C3D4E5F6478899AABB06 /* AuthViewModel.swift in Sources */,
+				A1B2C3D4E5F6478899AABB08 /* AuthScreenView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		63E29E5C60D24FE2BC07766C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H35ZJP7946;
+					GENERATE_INFOPLIST_FILE = NO;
+					INFOPLIST_FILE = SilviaAI/Resources/Info.plist;
+					INFOPLIST_KEY_CFBundleDisplayName = "Silvia AI";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Silvia AI uses the camera only when you choose Take Photo for an attachment.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Silvia AI uses the microphone only when you tap the mic button for voice input.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Silvia AI can save generated images to your Photos library when you tap Save to Photos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Silvia AI lets you pick photos to attach to a chat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Silvia AI uses speech recognition only when you enable voice input.";
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silviaai.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		84CCDB53D9FA46DEBF771474 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		94D34E872BEF42158FB3052F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = H35ZJP7946;
+					GENERATE_INFOPLIST_FILE = NO;
+					INFOPLIST_FILE = SilviaAI/Resources/Info.plist;
+					INFOPLIST_KEY_CFBundleDisplayName = "Silvia AI";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Silvia AI uses the camera only when you choose Take Photo for an attachment.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Silvia AI uses the microphone only when you tap the mic button for voice input.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Silvia AI can save generated images to your Photos library when you tap Save to Photos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Silvia AI lets you pick photos to attach to a chat.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Silvia AI uses speech recognition only when you enable voice input.";
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.silviaai.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		D7A53E625834478FA93DB192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		41616EF9AD5B4D25B3C03578 /* Build configuration list for PBXNativeTarget "SilviaAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94D34E872BEF42158FB3052F /* Debug */,
+				63E29E5C60D24FE2BC07766C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5F610D444C5B469C8532E407 /* Build configuration list for PBXProject "SilviaAI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7A53E625834478FA93DB192 /* Debug */,
+				84CCDB53D9FA46DEBF771474 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CC15A3C7251647CC9FAA7948 /* Project object */;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="description" content="Silvia AI - a premium multi-model Gemini chat studio with smart routing, streaming, vision, and image generation." />
+  <meta name="application-name" content="Silvia AI" />
+  <meta name="theme-color" content="#0A0B12" />
+  <link rel="canonical" href="https://silvia-ai-chat.vercel.app/" />
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://silvia-ai-chat.vercel.app/" />
+  <meta property="og:title" content="Silvia AI" />
+  <meta property="og:description" content="A premium multi-model Gemini chat studio with smart routing, streaming, vision, and image generation." />
+  <meta property="og:site_name" content="Silvia AI" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- iOS standalone web-app -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Silvia" />
+
+  <title>Silvia AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div id="root">
+    <div id="app-splash" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#0A0B12;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;">
+      <svg width="48" height="48" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7C5CFF"/><stop offset="0.5" stop-color="#5B8DEF"/><stop offset="1" stop-color="#2DD4BF"/></linearGradient></defs>
+        <rect width="512" height="512" rx="112" fill="url(#g)"/>
+        <path d="M256 100l52 118 128 12-96 86 28 126L256 376l-112 66 28-126-96-86 128-12z" fill="#fff"/>
+      </svg>
+      <h1 style="margin:16px 0 4px;font-size:28px;font-weight:800;background:linear-gradient(135deg,#7C5CFF,#5B8DEF,#2DD4BF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Silvia AI</h1>
+      <p style="margin:0 0 12px;font-size:14px;color:#888;">Loading...</p>
+      <a href="/privacy-policy.html" style="font-size:13px;font-weight:600;color:#2DD4BF;text-decoration:none;">Privacy policy</a>
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+</html>
