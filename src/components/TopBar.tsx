@@ -1,7 +1,7 @@
 import type { ModelId } from "../types";
 import { MODELS } from "../config/models";
 import ModelSelector from "./ModelSelector";
-import { CollapseIcon, MenuIcon, SparkIcon } from "./icons";
+import { CollapseIcon, GearIcon, MenuIcon, SparkIcon } from "./icons";
 
 interface TopBarProps {
   title: string;
@@ -24,7 +24,8 @@ export default function TopBar({
   return (
     <header className="topbar">
       <button className="icon-btn menu-btn" aria-label="Menu" onClick={onMenu}>
-        <MenuIcon />
+        <MenuIcon className="desktop-menu-icon" />
+        <GearIcon className="mobile-gear-icon" />
       </button>
       <div className="mobile-brand" aria-hidden="true">
         <span className="mobile-brand-mark">

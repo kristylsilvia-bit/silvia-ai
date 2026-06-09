@@ -1,7 +1,39 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Attachment } from "../types";
-import { FileIcon, PaperclipIcon, SendIcon, StopIcon, UploadIcon, XIcon } from "./icons";
+import {
+  FileIcon,
+  MicIcon,
+  PaperclipIcon,
+  PlusIcon,
+  SendIcon,
+  StopIcon,
+  UploadIcon,
+  XIcon,
+} from "./icons";
+
+interface SpeechRecognitionLike {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+interface SpeechRecognitionEventLike {
+  resultIndex: number;
+  results: ArrayLike<{ 0: { transcript: string } }>;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+type SpeechWindow = Window &
+  typeof globalThis & {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  };
 
 interface ComposerProps {
   value: string;
@@ -28,8 +60,10 @@ export default function Composer({
 }: ComposerProps) {
   const [focused, setFocused] = useState(false);
   const [dragover, setDragover] = useState(false);
+  const [listening, setListening] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   // Auto-grow the textarea to fit its content (capped by CSS max-height).
   useEffect(() => {
@@ -38,6 +72,12 @@ export default function Composer({
     t.style.height = "auto";
     t.style.height = `${Math.min(t.scrollHeight, 200)}px`;
   }, [value]);
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop();
+    };
+  }, []);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +116,39 @@ export default function Composer({
       e.preventDefault();
       onAddFiles(files);
     }
+  };
+
+  const toggleVoice = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      setListening(false);
+      return;
+    }
+
+    const SpeechRecognition =
+      (window as SpeechWindow).SpeechRecognition || (window as SpeechWindow).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      textareaRef.current?.focus();
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    const base = value.trim();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = navigator.language || "en-US";
+    recognition.onresult = (event) => {
+      let transcript = "";
+      for (let i = event.resultIndex; i < event.results.length; i += 1) {
+        transcript += event.results[i][0].transcript;
+      }
+      onChange([base, transcript.trim()].filter(Boolean).join(" "));
+    };
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognitionRef.current = recognition;
+    setListening(true);
+    recognition.start();
   };
 
   const composerClass =
@@ -124,11 +197,20 @@ export default function Composer({
         <div className="composer-main">
           <button
             type="button"
-            className="composer-btn"
+            className="composer-btn attach-btn"
             aria-label="Attach file"
             onClick={() => fileInputRef.current?.click()}
           >
-            <PaperclipIcon />
+            <PaperclipIcon className="attach-paperclip" />
+            <PlusIcon className="attach-plus" />
+          </button>
+          <button
+            type="button"
+            className={"composer-btn mic-btn" + (listening ? " listening" : "")}
+            aria-label={listening ? "Voice input active" : "Voice input"}
+            onClick={toggleVoice}
+          >
+            <MicIcon />
           </button>
           <textarea
             ref={textareaRef}

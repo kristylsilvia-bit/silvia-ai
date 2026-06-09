@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import type { ModelId } from "../types";
 import { MODELS, MODEL_ORDER } from "../config/models";
-import { CheckIcon, ChevronDownIcon } from "./icons";
+import { CheckIcon, ChevronDownIcon, CpuIcon } from "./icons";
 
 interface ModelSelectorProps {
   selected: ModelId;
@@ -33,8 +33,10 @@ export default function ModelSelector({ selected, onSelect }: ModelSelectorProps
           setOpen((o) => !o);
         }}
       >
+        <CpuIcon className="cpu-icon" />
         <span className="dot" style={{ background: current.color }} />
-        <span>{current.label}</span>
+        <span className="model-label-full">{current.label}</span>
+        <span className="model-label-short">{current.short}</span>
         {selected === "auto" && <span className="auto-pill">Smart</span>}
         <ChevronDownIcon className="chev" />
       </button>

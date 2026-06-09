@@ -68,6 +68,24 @@ export function CollapseIcon(props: IconProps) {
   );
 }
 
+export function CpuIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+      <path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" />
+    </svg>
+  );
+}
+
+export function GearIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" />
+      <path d="M19.4 15a1.8 1.8 0 00.36 2l.06.06a2.2 2.2 0 01-3.11 3.11l-.06-.06a1.8 1.8 0 00-2-.36 1.8 1.8 0 00-1.1 1.65V21.5a2.2 2.2 0 01-4.4 0v-.09a1.8 1.8 0 00-1.1-1.65 1.8 1.8 0 00-2 .36l-.06.06a2.2 2.2 0 01-3.11-3.11l.06-.06a1.8 1.8 0 00.36-2 1.8 1.8 0 00-1.65-1.1H1.5a2.2 2.2 0 010-4.4h.09a1.8 1.8 0 001.65-1.1 1.8 1.8 0 00-.36-2l-.06-.06a2.2 2.2 0 013.11-3.11l.06.06a1.8 1.8 0 002 .36h.02a1.8 1.8 0 001.08-1.65V2.5a2.2 2.2 0 014.4 0v.09a1.8 1.8 0 001.1 1.65 1.8 1.8 0 002-.36l.06-.06a2.2 2.2 0 013.11 3.11l-.06.06a1.8 1.8 0 00-.36 2v.02a1.8 1.8 0 001.65 1.08h.09a2.2 2.2 0 010 4.4h-.09A1.8 1.8 0 0019.4 15z" />
+    </svg>
+  );
+}
+
 export function ChevronDownIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...stroke} strokeWidth={2.2} strokeLinejoin={undefined} {...props}>
@@ -156,6 +174,15 @@ export function PaperclipIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
       <path d="M21.4 11.1l-9.2 9.2a5 5 0 01-7.1-7.1l9.2-9.2a3.3 3.3 0 014.7 4.7l-9.2 9.2a1.7 1.7 0 01-2.4-2.4l8.5-8.5" />
+    </svg>
+  );
+}
+
+export function MicIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0014 0M12 18v3M8 21h8" />
     </svg>
   );
 }
