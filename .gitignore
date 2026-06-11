@@ -1,0 +1,9 @@
+.vercel
+.env*
+!.env.example
+node_modules/
+.npm-cache/
+.codex-temp-npm/
+dist/
+src-tauri/target/
+src-tauri/gen/

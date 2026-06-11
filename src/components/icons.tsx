@@ -1,8 +1,8 @@
 import type { SVGProps } from "react";
 
 /*
- * Inline icon set ported 1:1 from the prototype. Each is a bare <svg> so the
- * stylesheet's `… svg { width/height }` rules size them exactly as designed.
+ * Inline icon set ported from the prototype. Each is a bare SVG so stylesheet
+ * rules can size them exactly as designed.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -110,6 +110,24 @@ export function DownloadIcon(props: IconProps) {
   );
 }
 
+export function RefreshIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M21 12a9 9 0 11-2.64-6.36" />
+      <path d="M21 4v6h-6" />
+    </svg>
+  );
+}
+
+export function CopyIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <rect x="9" y="9" width="12" height="12" rx="2" />
+      <path d="M5 15H4a2 2 0 01-2-2V5a2 2 0 012-2h8a2 2 0 012 2v1" />
+    </svg>
+  );
+}
+
 export function FileIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.8} {...props}>
@@ -141,6 +159,15 @@ export function ImageIcon(props: IconProps) {
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="9" cy="9" r="1.6" />
       <path d="M21 15l-5-5L5 21" />
+    </svg>
+  );
+}
+
+export function CameraIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M4 8a2 2 0 012-2h2.2l1.4-2h4.8l1.4 2H18a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2z" />
+      <circle cx="12" cy="12.5" r="3.4" />
     </svg>
   );
 }
@@ -211,11 +238,121 @@ export function UploadIcon(props: IconProps) {
   );
 }
 
+export function ArrowUpRightIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={2.1} {...props}>
+      <path d="M7 17L17 7M9 7h8v8" />
+    </svg>
+  );
+}
+
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={2} {...props}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.3-4.3" />
+    </svg>
+  );
+}
+
 export function ErrorIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...stroke} strokeWidth={2} strokeLinejoin={undefined} {...props}>
       <path d="M12 8v5M12 16.5v.5" />
       <circle cx="12" cy="12" r="9" />
+    </svg>
+  );
+}
+
+/** Animated-friendly waveform: bars are styled/animated via CSS. */
+export function WaveformIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <rect className="wf-bar wf-1" x="3" y="9" width="2.6" height="6" rx="1.3" />
+      <rect className="wf-bar wf-2" x="8.2" y="5" width="2.6" height="14" rx="1.3" />
+      <rect className="wf-bar wf-3" x="13.4" y="7" width="2.6" height="10" rx="1.3" />
+      <rect className="wf-bar wf-4" x="18.6" y="10" width="2.6" height="4" rx="1.3" />
+    </svg>
+  );
+}
+
+export function MicOffIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M9 9v3a3 3 0 005.1 2.1M15 9.3V6a3 3 0 00-5.6-1.5" />
+      <path d="M5 11a7 7 0 0010.6 6M19 11a7 7 0 01-.6 2.8M12 18v3M8 21h8" />
+      <path d="M3 3l18 18" />
+    </svg>
+  );
+}
+
+export function PhoneEndIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M12 9.5c-3.6 0-6.9 1.1-9.5 3a2 2 0 00-.6 2.6l1 1.8a1.6 1.6 0 002 .7l2.8-1.1a1.6 1.6 0 001-1.5v-1.3a13.5 13.5 0 016.6 0v1.3c0 .67.4 1.27 1 1.5l2.8 1.1a1.6 1.6 0 002-.7l1-1.8a2 2 0 00-.6-2.6c-2.6-1.9-5.9-3-9.5-3z" />
+    </svg>
+  );
+}
+
+export function TranscriptIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M8 8h8M8 12h8M8 16h5" />
+    </svg>
+  );
+}
+
+export function PinIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M12 17v5M7 4h10l-1.2 6.2 2.7 3.3a1 1 0 01-.8 1.5H6.3a1 1 0 01-.8-1.5l2.7-3.3z" />
+    </svg>
+  );
+}
+
+export function PinFilledIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 17v5M7 4h10l-1.2 6.2 2.7 3.3a1 1 0 01-.8 1.5H6.3a1 1 0 01-.8-1.5l2.7-3.3z" />
+    </svg>
+  );
+}
+
+export function CloudCheckIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M17.5 18.5h-11a4.5 4.5 0 01-.4-9A6 6 0 0118 8.7a4.9 4.9 0 01-.5 9.8z" />
+      <path d="M9 13.5l2.2 2.2 4-4.2" />
+    </svg>
+  );
+}
+
+export function CloudOffIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M17.5 18.5h-11a4.5 4.5 0 01-1.7-8.7M9.3 5.4A6 6 0 0118 8.7a4.9 4.9 0 012.8 8.3" />
+      <path d="M3 3l18 18" />
+    </svg>
+  );
+}
+
+export function CloudSyncIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...stroke} strokeWidth={1.9} {...props}>
+      <path d="M17.5 18.5h-11a4.5 4.5 0 01-.4-9A6 6 0 0118 8.7a4.9 4.9 0 01-.5 9.8z" />
+      <path d="M9.5 13.5a2.6 2.6 0 014.9-.9M14.5 15.5a2.6 2.6 0 01-4.9.9" />
+    </svg>
+  );
+}
+
+export function VoiceBadgeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <rect x="4" y="9.5" width="2.4" height="5" rx="1.2" />
+      <rect x="8.4" y="6.5" width="2.4" height="11" rx="1.2" />
+      <rect x="12.8" y="4" width="2.4" height="16" rx="1.2" />
+      <rect x="17.2" y="8" width="2.4" height="8" rx="1.2" />
     </svg>
   );
 }

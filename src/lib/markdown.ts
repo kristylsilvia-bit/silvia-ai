@@ -2,8 +2,8 @@ import { marked } from "marked";
 import hljs from "highlight.js/lib/core";
 import DOMPurify from "dompurify";
 
-// Curated language set — keeps the bundle small vs. the full highlight.js build.
-// Each module also registers its common aliases (js, ts, html, sh, yml, …).
+// Curated language set keeps the bundle small vs. the full highlight.js build.
+// Each module also registers its common aliases: js, ts, html, sh, yml, etc.
 import bash from "highlight.js/lib/languages/bash";
 import c from "highlight.js/lib/languages/c";
 import cpp from "highlight.js/lib/languages/cpp";
@@ -45,19 +45,20 @@ const LANGUAGES = {
   xml,
   yaml,
 };
+
 for (const [name, lang] of Object.entries(LANGUAGES)) {
   hljs.registerLanguage(name, lang);
 }
 
 marked.setOptions({ breaks: true, gfm: true });
 
-/** Parse markdown → sanitized HTML string. */
+/** Parse markdown into a sanitized HTML string. */
 export function renderMarkdown(text: string): string {
   const dirty = marked.parse(text ?? "", { async: false }) as string;
   return DOMPurify.sanitize(dirty, { ADD_ATTR: ["target"] });
 }
 
-// Raw SVG strings used by the DOM-built copy button (inside enhanced markdown).
+// Raw SVG strings used by the DOM-built copy button inside enhanced markdown.
 const SVG_COPY =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
 const SVG_CHECK =
@@ -65,8 +66,9 @@ const SVG_CHECK =
 
 /**
  * Post-process rendered markdown inside `container`:
- *  - wrap each <pre><code> in a code card with a language label + copy button
+ *  - wrap each code block in a premium code card with a language label and copy button
  *  - syntax-highlight the code
+ *  - wrap tables for horizontal scrolling on small screens
  *  - force links to open safely in a new tab
  * Idempotent: re-running on already-enhanced nodes is a no-op.
  */
@@ -82,7 +84,7 @@ export function enhanceContent(container: HTMLElement): void {
     try {
       hljs.highlightElement(code);
     } catch {
-      /* unknown language — leave un-highlighted */
+      /* Unknown language: leave un-highlighted. */
     }
 
     const wrap = document.createElement("div");
@@ -99,13 +101,16 @@ export function enhanceContent(container: HTMLElement): void {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "copy-btn";
+    btn.setAttribute("aria-label", "Copy code");
     btn.innerHTML = `${SVG_COPY}<span>Copy</span>`;
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(code.textContent ?? "").then(() => {
         btn.classList.add("copied");
+        btn.setAttribute("aria-label", "Code copied");
         btn.innerHTML = `${SVG_CHECK}<span>Copied</span>`;
         setTimeout(() => {
           btn.classList.remove("copied");
+          btn.setAttribute("aria-label", "Copy code");
           btn.innerHTML = `${SVG_COPY}<span>Copy</span>`;
         }, 1600);
       });
@@ -115,6 +120,14 @@ export function enhanceContent(container: HTMLElement): void {
     pre.replaceWith(wrap);
     wrap.appendChild(head);
     wrap.appendChild(pre);
+  });
+
+  container.querySelectorAll<HTMLTableElement>("table").forEach((table) => {
+    if (table.parentElement?.classList.contains("table-wrap")) return;
+    const wrap = document.createElement("div");
+    wrap.className = "table-wrap";
+    table.replaceWith(wrap);
+    wrap.appendChild(table);
   });
 
   container.querySelectorAll("a").forEach((a) => {

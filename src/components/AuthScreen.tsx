@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { signInWithGoogle, signInEmail, signUpEmail, resetPassword } from "../lib/firebase";
+import { useEffect, useState } from "react";
+
+import { signInEmail, signInWithGoogle, signUpEmail, resetPassword } from "../lib/firebase";
+import { CheckIcon, SparkIcon, XIcon } from "./icons";
 
 type Mode = "signin" | "signup" | "reset";
 
@@ -17,11 +19,27 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
   const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => {
+    if (!onClose || trialExpired) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose, trialExpired]);
+
   const handle = async () => {
     setError("");
     setInfo("");
-    if (!email) { setError("Enter your email."); return; }
-    if (mode !== "reset" && !password) { setError("Enter your password."); return; }
+    if (!email) {
+      setError("Enter your email.");
+      return;
+    }
+    if (mode !== "reset" && !password) {
+      setError("Enter your password.");
+      return;
+    }
+
     setBusy(true);
     try {
       if (mode === "signin") {
@@ -30,8 +48,7 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
         await signUpEmail(email, password);
       } else {
         await resetPassword(email);
-        setInfo("Password reset email sent — check your inbox.");
-        setBusy(false);
+        setInfo("Password reset email sent - check your inbox.");
         return;
       }
       onClose?.();
@@ -43,8 +60,15 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
     }
   };
 
+  const setAuthMode = (nextMode: Mode) => {
+    setMode(nextMode);
+    setError("");
+    setInfo("");
+  };
+
   const handleGoogle = async () => {
     setError("");
+    setInfo("");
     setBusy(true);
     try {
       await signInWithGoogle();
@@ -57,95 +81,154 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
     }
   };
 
+  const title =
+    mode === "signin" ? "Welcome back" : mode === "signup" ? "Create your account" : "Reset password";
+  const subtitle =
+    mode === "reset"
+      ? "Enter your email and Silvia AI will send a reset link."
+      : trialExpired
+        ? "Sign in to keep your chats, settings, and generated images moving with you."
+        : "Keep your Silvia AI workspace synced across devices.";
+  const submitLabel =
+    mode === "signin" ? "Sign in" : mode === "signup" ? "Create account" : "Send reset email";
+
   return (
-    <div className="auth-overlay">
-      <div className="auth-card">
+    <div className="auth-overlay" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+      <section className="auth-card">
+        {onClose && !trialExpired && (
+          <button className="auth-close" type="button" aria-label="Close sign in" onClick={onClose}>
+            <XIcon />
+          </button>
+        )}
+
         <div className="auth-logo">
-          <svg width="36" height="36" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="ag" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stopColor="#7C5CFF"/>
-                <stop offset="0.5" stopColor="#5B8DEF"/>
-                <stop offset="1" stopColor="#2DD4BF"/>
-              </linearGradient>
-            </defs>
-            <rect width="512" height="512" rx="112" fill="url(#ag)"/>
-            <path d="M256 100l52 118 128 12-96 86 28 126L256 376l-112 66 28-126-96-86 128-12z" fill="#fff"/>
-          </svg>
-          <span>Silvia AI</span>
+          <span className="auth-mark">
+            <SparkIcon />
+          </span>
+          <span>
+            <strong>Silvia AI</strong>
+            <small>Premium Gemini chat studio</small>
+          </span>
         </div>
 
         {trialExpired && (
           <div className="auth-trial-banner">
-            Your 5 free chats are up — sign in to keep going
+            Your 5 free chats are up - sign in to keep going
           </div>
         )}
 
-        <h2 className="auth-title">
-          {mode === "signin" && "Welcome back"}
-          {mode === "signup" && "Create account"}
-          {mode === "reset" && "Reset password"}
-        </h2>
+        <div className="auth-copy">
+          <h2 className="auth-title" id="auth-title">{title}</h2>
+          <p>{subtitle}</p>
+        </div>
+
+        <div className="auth-benefits" aria-label="Account benefits">
+          <span><CheckIcon /> Synced chats</span>
+          <span><CheckIcon /> Smart routing</span>
+          <span><CheckIcon /> Image tools</span>
+        </div>
 
         {mode !== "reset" && (
-          <button className="auth-google-btn" onClick={handleGoogle} disabled={busy}>
-            <GoogleIcon />
-            Continue with Google
+          <div className="auth-mode-tabs" role="tablist" aria-label="Account mode">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "signin"}
+              className={mode === "signin" ? "active" : ""}
+              onClick={() => setAuthMode("signin")}
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === "signup"}
+              className={mode === "signup" ? "active" : ""}
+              onClick={() => setAuthMode("signup")}
+            >
+              Create
+            </button>
+          </div>
+        )}
+
+        <form
+          className="auth-form"
+          aria-busy={busy}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handle();
+          }}
+        >
+          {mode !== "reset" && (
+            <button className="auth-google-btn" type="button" onClick={handleGoogle} disabled={busy}>
+              <GoogleIcon />
+              Continue with Google
+            </button>
+          )}
+
+          {mode !== "reset" && <div className="auth-divider"><span>or</span></div>}
+
+          <label className="auth-field">
+            <span>Email</span>
+            <input
+              className="auth-input"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </label>
+
+          {mode !== "reset" && (
+            <label className="auth-field">
+              <span>Password</span>
+              <input
+                className="auth-input"
+                type="password"
+                placeholder="Your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                minLength={6}
+              />
+              {mode === "signup" && <em className="auth-field-note">Use at least 6 characters.</em>}
+            </label>
+          )}
+
+          {error && <p className="auth-error" role="alert">{error}</p>}
+          {info && <p className="auth-info" role="status">{info}</p>}
+
+          <button className="auth-submit" type="submit" disabled={busy}>
+            {busy && <span className="auth-submit-spinner" aria-hidden="true" />}
+            {busy ? "Please wait" : submitLabel}
           </button>
-        )}
+        </form>
 
-        {mode !== "reset" && <div className="auth-divider"><span>or</span></div>}
-
-        <input
-          className="auth-input"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handle()}
-          autoComplete="email"
-        />
-
-        {mode !== "reset" && (
-          <input
-            className="auth-input"
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handle()}
-            autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          />
-        )}
-
-        {error && <p className="auth-error">{error}</p>}
-        {info && <p className="auth-info">{info}</p>}
-
-        <button className="auth-submit" onClick={handle} disabled={busy}>
-          {busy ? "Please wait…" : mode === "signin" ? "Sign in" : mode === "signup" ? "Create account" : "Send reset email"}
-        </button>
+        <p className="auth-security-note">
+          Your chats and settings stay with your Silvia AI account across devices.
+        </p>
 
         <div className="auth-links">
           {mode === "signin" && (
-            <>
-              <button onClick={() => { setMode("signup"); setError(""); setInfo(""); }}>Create account</button>
-              <button onClick={() => { setMode("reset"); setError(""); setInfo(""); }}>Forgot password?</button>
-            </>
+            <button type="button" onClick={() => setAuthMode("reset")}>Forgot password?</button>
           )}
           {mode === "signup" && (
-            <button onClick={() => { setMode("signin"); setError(""); setInfo(""); }}>Already have an account? Sign in</button>
+            <button type="button" onClick={() => setAuthMode("signin")}>
+              Use existing account
+            </button>
           )}
           {mode === "reset" && (
-            <button onClick={() => { setMode("signin"); setError(""); setInfo(""); }}>Back to sign in</button>
+            <button type="button" onClick={() => setAuthMode("signin")}>Back to sign in</button>
           )}
         </div>
 
         {trialExpired && onClose && (
-          <button className="auth-skip" onClick={onClose}>
+          <button className="auth-skip" type="button" onClick={onClose}>
             No thanks, start over
           </button>
         )}
-      </div>
+      </section>
     </div>
   );
 }
@@ -166,7 +249,7 @@ function friendlyError(msg: string): string {
   if (/email-already-in-use/i.test(msg)) return "An account with this email already exists.";
   if (/weak-password/i.test(msg)) return "Password must be at least 6 characters.";
   if (/invalid-email/i.test(msg)) return "Enter a valid email address.";
-  if (/too-many-requests/i.test(msg)) return "Too many attempts — try again later.";
+  if (/too-many-requests/i.test(msg)) return "Too many attempts - try again later.";
   if (/popup-closed/i.test(msg)) return "Sign-in popup was closed.";
   return msg.replace(/Firebase: /i, "").replace(/\s*\(auth\/.*?\)\.?/g, "");
 }

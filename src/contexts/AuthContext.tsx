@@ -1,7 +1,9 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -12,20 +14,40 @@ interface AuthState {
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthState>({ user: null, loading: true });
+interface AuthContextValue extends AuthState {
+  refreshUser: () => void;
+}
+
+const AuthContext = createContext<AuthContextValue>({
+  user: null,
+  loading: true,
+  refreshUser: () => undefined,
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ user: null, loading: true });
 
+  const refreshUser = useCallback(() => {
+    if (!auth) return;
+    setState((prev) => ({ ...prev, user: auth!.currentUser }));
+  }, []);
+
   useEffect(() => {
+    if (!auth) {
+      setState({ user: null, loading: false });
+      return;
+    }
     return onAuthStateChanged(auth, (user) => {
       setState({ user, loading: false });
     });
   }, []);
 
-  return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
+  const value = useMemo(() => ({ ...state, refreshUser }), [state, refreshUser]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

@@ -1,6 +1,6 @@
 import type { Attachment, Chat } from "../types";
 
-/* >>> Provide your key via .env (VITE_GEMINI_API_KEY) — see .env.example <<< */
+/* >>> Provide your key via .env (VITE_GEMINI_API_KEY); see .env.example <<< */
 export const GEMINI_API_KEY =
   import.meta.env.VITE_GEMINI_API_KEY ?? "YOUR_GEMINI_API_KEY_HERE";
 
@@ -33,8 +33,14 @@ export function buildContents(
   chat: Chat,
   userText: string,
   attachments: Attachment[],
+  systemPrompt = "",
 ): Content[] {
   const contents: Content[] = [];
+  const prompt = systemPrompt.trim();
+  if (prompt) {
+    contents.push({ role: "user", parts: [{ text: prompt }] });
+    contents.push({ role: "model", parts: [{ text: "Understood. I will respond as Silvia AI." }] });
+  }
   chat.messages
     .filter((m) => !m.pending && !m.image && m.content)
     .forEach((m) => {
@@ -46,6 +52,18 @@ export function buildContents(
     });
   contents.push({ role: "user", parts: buildParts(userText, attachments) });
   return contents;
+}
+
+/**
+ * True when an error means the requested model id is not served by the API
+ * (unknown/retired model, or not enabled for this key) - i.e. retrying with a
+ * fallback model can succeed.
+ */
+export function isModelUnavailableError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  return /\bis not found\b|\bnot found for api\b|\bunknown (?:model|name)\b|\bmodel is (?:unavailable|not supported)\b|\bunsupported model\b/i.test(
+    err.message,
+  );
 }
 
 /** Normalise Gemini error responses into friendly Error messages. */
@@ -117,7 +135,7 @@ export async function streamGenerate(
           onChunk(full);
         }
       } catch {
-        /* partial JSON across chunk boundary — ignore and wait for more */
+        /* Partial JSON across chunk boundary: ignore and wait for more. */
       }
     }
   }

@@ -41,7 +41,7 @@ export function shouldRouteToImageModel(
 /**
  * Decide which concrete model handles a message.
  * When the user has pinned a model (anything but "auto") we respect it;
- * otherwise: image intent → image, any attachment → pro, else → flash.
+ * otherwise: image intent -> image, any attachment -> pro, else -> flash.
  */
 export function routeModel(
   selectedModel: ModelId,

@@ -9,9 +9,8 @@ interface MarkdownContentProps {
 }
 
 /**
- * Renders sanitized markdown. When not streaming, it enhances code blocks
- * (language label + copy button + syntax highlight) and hardens links — the
- * exact post-processing the prototype performed.
+ * Renders sanitized markdown. When not streaming, it enhances code blocks,
+ * tables, and links so assistant answers feel polished and readable.
  */
 export default function MarkdownContent({ content, streaming }: MarkdownContentProps) {
   const ref = useRef<HTMLDivElement>(null);

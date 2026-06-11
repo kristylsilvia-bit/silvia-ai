@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import type { Attachment } from "../types";
 import {
+  CameraIcon,
   FileIcon,
+  ImageIcon,
   MicIcon,
   PaperclipIcon,
   PlusIcon,
   SendIcon,
   StopIcon,
   UploadIcon,
+  WaveformIcon,
   XIcon,
 } from "./icons";
 
@@ -43,8 +46,12 @@ interface ComposerProps {
   streaming: boolean;
   canSend: boolean;
   attachments: Attachment[];
+  voiceInputEnabled: boolean;
+  onVoiceInputEnabledChange: (enabled: boolean) => void;
   onAddFiles: (files: FileList | File[]) => void;
   onRemoveAttachment: (id: string) => void;
+  /** Opens the full-screen Voice Mode experience. */
+  onOpenVoiceMode: () => void;
 }
 
 export default function Composer({
@@ -55,22 +62,32 @@ export default function Composer({
   streaming,
   canSend,
   attachments,
+  voiceInputEnabled,
+  onVoiceInputEnabledChange,
   onAddFiles,
   onRemoveAttachment,
+  onOpenVoiceMode,
 }: ComposerProps) {
   const [focused, setFocused] = useState(false);
   const [dragover, setDragover] = useState(false);
   const [listening, setListening] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [voiceNotice, setVoiceNotice] = useState("");
+  const [attachmentMenuOpen, setAttachmentMenuOpen] = useState(false);
+  const attachmentMenuId = useId();
+  const formRef = useRef<HTMLFormElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+  const lastEditorValueRef = useRef(value);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
-  // Auto-grow the textarea to fit its content (capped by CSS max-height).
   useEffect(() => {
-    const t = textareaRef.current;
-    if (!t) return;
-    t.style.height = "auto";
-    t.style.height = `${Math.min(t.scrollHeight, 200)}px`;
+    const editor = editorRef.current;
+    if (!editor) return;
+    const current = editor.textContent ?? "";
+    if (current !== value) editor.textContent = value;
+    lastEditorValueRef.current = value;
   }, [value]);
 
   useEffect(() => {
@@ -79,16 +96,86 @@ export default function Composer({
     };
   }, []);
 
+  useEffect(() => {
+    if (voiceInputEnabled || !listening) return;
+    recognitionRef.current?.stop();
+    setListening(false);
+  }, [voiceInputEnabled, listening]);
+
+  useEffect(() => {
+    if (!attachmentMenuOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setAttachmentMenuOpen(false);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        setAttachmentMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [attachmentMenuOpen]);
+
+  useEffect(() => {
+    if (!voiceNotice) return;
+    const timer = window.setTimeout(() => setVoiceNotice(""), 2200);
+    return () => window.clearTimeout(timer);
+  }, [voiceNotice]);
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    setAttachmentMenuOpen(false);
     if (streaming) onStop();
     else onSend();
   };
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const syncEditorValue = () => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const next = editor.textContent ?? "";
+    if (!next) editor.textContent = "";
+    lastEditorValueRef.current = next;
+    onChange(next);
+  };
+
+  const insertPlainText = (text: string) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) {
+      editor.textContent = `${editor.textContent ?? ""}${text}`;
+      syncEditorValue();
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    if (!editor.contains(range.commonAncestorContainer)) {
+      editor.textContent = `${editor.textContent ?? ""}${text}`;
+      syncEditorValue();
+      return;
+    }
+
+    range.deleteContents();
+    const node = document.createTextNode(text);
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    syncEditorValue();
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
       e.preventDefault();
       if (!streaming) onSend();
+    } else if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
+      insertPlainText("\n");
     }
   };
 
@@ -104,10 +191,11 @@ export default function Composer({
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     if (e.dataTransfer.files.length) onAddFiles(e.dataTransfer.files);
+    setAttachmentMenuOpen(false);
     setDragover(false);
   };
 
-  const onPaste = (e: React.ClipboardEvent) => {
+  const onPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
     const files = Array.from(e.clipboardData?.items ?? [])
       .filter((i) => i.kind === "file")
       .map((i) => i.getAsFile())
@@ -115,7 +203,24 @@ export default function Composer({
     if (files.length) {
       e.preventDefault();
       onAddFiles(files);
+      setAttachmentMenuOpen(false);
+      return;
     }
+
+    const text = e.clipboardData.getData("text/plain");
+    if (text) {
+      e.preventDefault();
+      insertPlainText(text);
+    }
+  };
+
+  const attachFromInput = (files: FileList | null) => {
+    if (files?.length) onAddFiles(files);
+    setAttachmentMenuOpen(false);
+  };
+
+  const openAttachmentInput = (input: HTMLInputElement | null) => {
+    input?.click();
   };
 
   const toggleVoice = () => {
@@ -125,10 +230,15 @@ export default function Composer({
       return;
     }
 
+    if (!voiceInputEnabled) {
+      onVoiceInputEnabledChange(true);
+    }
+
     const SpeechRecognition =
       (window as SpeechWindow).SpeechRecognition || (window as SpeechWindow).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      textareaRef.current?.focus();
+      setVoiceNotice("Voice input is not available in this browser");
+      editorRef.current?.focus();
       return;
     }
 
@@ -148,15 +258,29 @@ export default function Composer({
     recognition.onerror = () => setListening(false);
     recognitionRef.current = recognition;
     setListening(true);
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setListening(false);
+      setVoiceNotice("Voice input could not start");
+    }
   };
 
   const composerClass =
-    "composer" + (focused ? " focused" : "") + (dragover ? " dragover" : "");
+    "composer" +
+    (focused ? " focused" : "") +
+    (dragover ? " dragover" : "") +
+    (attachmentMenuOpen ? " menu-open" : "") +
+    (attachments.length ? " has-attachments" : "") +
+    (listening ? " is-listening" : "");
+  const composerStatus = listening
+    ? "Listening"
+    : voiceNotice || (attachments.length ? `${attachments.length} attachment${attachments.length === 1 ? "" : "s"} ready` : "");
 
   return (
     <div className="composer-wrap">
       <form
+        ref={formRef}
         className={composerClass}
         onSubmit={submit}
         onFocus={() => setFocused(true)}
@@ -169,6 +293,48 @@ export default function Composer({
         <div className="drop-hint">
           <UploadIcon width={18} height={18} />
           Drop files to attach
+        </div>
+
+        <div
+          id={attachmentMenuId}
+          className={"attachment-panel" + (attachmentMenuOpen ? " show" : "")}
+          role="menu"
+          aria-label="Attachments"
+        >
+          <div className="attachment-panel-title">Add attachment</div>
+          <button
+            type="button"
+            className="attachment-action"
+            role="menuitem"
+            onClick={() => openAttachmentInput(cameraInputRef.current)}
+          >
+            <span>
+              <CameraIcon />
+            </span>
+            Take photo
+          </button>
+          <button
+            type="button"
+            className="attachment-action"
+            role="menuitem"
+            onClick={() => openAttachmentInput(photoInputRef.current)}
+          >
+            <span>
+              <ImageIcon />
+            </span>
+            Upload photo
+          </button>
+          <button
+            type="button"
+            className="attachment-action"
+            role="menuitem"
+            onClick={() => openAttachmentInput(fileInputRef.current)}
+          >
+            <span>
+              <FileIcon />
+            </span>
+            Upload file
+          </button>
         </div>
 
         <div className={"attach-tray" + (attachments.length ? " show" : "")}>
@@ -194,33 +360,71 @@ export default function Composer({
           ))}
         </div>
 
+        {composerStatus && (
+          <div className={"composer-status" + (listening ? " listening" : voiceNotice ? " warning" : "")} aria-live="polite">
+            <span aria-hidden="true" />
+            {composerStatus}
+          </div>
+        )}
+
         <div className="composer-main">
           <button
             type="button"
-            className="composer-btn attach-btn"
-            aria-label="Attach file"
-            onClick={() => fileInputRef.current?.click()}
+            className={"composer-btn attach-btn" + (attachmentMenuOpen ? " active" : "")}
+            aria-label={attachmentMenuOpen ? "Close attachment menu" : "Add attachment"}
+            aria-expanded={attachmentMenuOpen}
+            aria-controls={attachmentMenuId}
+            onClick={() => setAttachmentMenuOpen((open) => !open)}
           >
             <PaperclipIcon className="attach-paperclip" />
             <PlusIcon className="attach-plus" />
           </button>
+          <div
+            ref={editorRef}
+            className={"composer-editor" + (value ? "" : " empty")}
+            role="textbox"
+            aria-label="Ask Silvia AI anything"
+            aria-multiline="true"
+            contentEditable
+            data-placeholder="Ask Silvia AI anything..."
+            inputMode="text"
+            enterKeyHint="send"
+            autoCapitalize="sentences"
+            autoCorrect="on"
+            spellCheck
+            suppressContentEditableWarning
+            onInput={syncEditorValue}
+            onKeyDown={onKeyDown}
+            onPaste={onPaste}
+          />
           <button
             type="button"
             className={"composer-btn mic-btn" + (listening ? " listening" : "")}
-            aria-label={listening ? "Voice input active" : "Voice input"}
+            aria-label={
+              listening
+                ? "Voice input active"
+                : voiceInputEnabled
+                  ? "Voice input"
+                  : "Enable voice input"
+            }
             onClick={toggleVoice}
           >
             <MicIcon />
           </button>
-          <textarea
-            ref={textareaRef}
-            rows={1}
-            placeholder="Message Silvia…  ask anything, attach files, or describe an image to create"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyDown={onKeyDown}
-            onPaste={onPaste}
-          />
+          <button
+            type="button"
+            className="composer-btn voice-mode-btn"
+            aria-label="Start Voice Mode"
+            title="Voice Mode - talk with Silvia AI"
+            disabled={streaming}
+            onClick={() => {
+              recognitionRef.current?.stop();
+              setListening(false);
+              onOpenVoiceMode();
+            }}
+          >
+            <WaveformIcon />
+          </button>
           <button
             type="submit"
             className={"composer-btn send-btn" + (streaming ? " stop" : "")}
@@ -232,18 +436,40 @@ export default function Composer({
         </div>
 
         <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          hidden
+          onChange={(e) => {
+            attachFromInput(e.target.files);
+            e.target.value = "";
+          }}
+        />
+        <input
+          ref={photoInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          onChange={(e) => {
+            attachFromInput(e.target.files);
+            e.target.value = "";
+          }}
+        />
+        <input
           ref={fileInputRef}
           type="file"
           multiple
           hidden
           onChange={(e) => {
-            if (e.target.files) onAddFiles(e.target.files);
+            attachFromInput(e.target.files);
             e.target.value = "";
           }}
         />
       </form>
       <div className="composer-hint">
-        Silvia routes to the best model automatically · <kbd>Enter</kbd> to send ·{" "}
+        Silvia AI routes to the best model automatically - <kbd>Enter</kbd> to send -{" "}
         <kbd>Shift</kbd>+<kbd>Enter</kbd> for newline
       </div>
     </div>

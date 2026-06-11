@@ -3,15 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Silvia AI — a production-grade, multi-model Gemini chat studio.",
+  "description": "Silvia AI - a production-grade, multi-model Gemini chat studio.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext ts,tsx --max-warnings 0"
+    "dev": "node node_modules/vite/bin/vite.js",
+    "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "lint": "node node_modules/eslint/bin/eslint.js . --ext ts,tsx --max-warnings 0"
   },
   "dependencies": {
+    "@google/genai": "^2.8.0",
     "dompurify": "^3.1.6",
     "firebase": "^12.14.0",
     "highlight.js": "^11.10.0",
@@ -20,6 +21,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.11.2",
     "@types/dompurify": "^3.0.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",

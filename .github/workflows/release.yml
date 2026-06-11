@@ -1,0 +1,80 @@
+# Silvia AI — Windows Desktop Release
+#
+# Triggers:
+#   - Push a tag like v1.0.1  →  builds + publishes a GitHub Release automatically
+#   - workflow_dispatch       →  manual build/release from the Actions UI
+#
+# Required secrets (Settings → Secrets and variables → Actions):
+#   VITE_GEMINI_API_KEY  — your Gemini API key, injected at Vite build time
+#   GITHUB_TOKEN         — automatically provided by GitHub, no setup needed
+#
+# Prerequisites (one-time setup in your repo):
+#   1. Run `npm install --save-dev @tauri-apps/cli` to add the Tauri CLI.
+#   2. Run `npx tauri init` and follow the prompts to generate src-tauri/.
+#   3. In src-tauri/tauri.conf.json set:
+#        "bundle": { "targets": ["msi", "nsis"] }
+#      so both installers are produced.
+#   4. Push the resulting src-tauri/ directory to the repo.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release tag (e.g. v1.0.1) — must match package.json + tauri.conf.json"
+        required: true
+        default: "v1.0.0"
+
+jobs:
+  build-windows:
+    name: Build Windows installers
+    runs-on: windows-latest
+
+    steps:
+      # ── Source ────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── Node.js 20 ────────────────────────────────────────────
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # ── Rust stable (MSVC) ───────────────────────────────────
+      - name: Set up Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache Rust build artefacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      # ── Tauri build + GitHub Release ─────────────────────────
+      # tauri-action compiles the Vite frontend, then the Tauri
+      # binary, bundles both .msi and .nsis installers, creates
+      # the GitHub Release, and uploads the installer files.
+      - name: Build and publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Vite inlines this at build time; it is NOT shipped in
+          # plain text but is visible in the bundled JS — suitable
+          # for a personal/hobby deployment.
+          VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
+        with:
+          tagName: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}
+          releaseName: "Silvia AI ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.version || github.ref_name }}"
+          releaseBody: "Silvia AI desktop app — Windows installer"
+          releaseDraft: false
+          prerelease: false
