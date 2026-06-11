@@ -19,6 +19,9 @@ import {
   type Firestore,
 } from "firebase/firestore";
 
+// True when running inside the Tauri desktop wrapper (window.__TAURI__ is injected by Tauri at runtime)
+export const isTauriApp = "__TAURI__" in window;
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,

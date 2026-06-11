@@ -58,6 +58,22 @@ change or redeploy needed.
 
 ---
 
+## Firebase authorized domains (one-time setup)
+
+The Tauri desktop app runs from the origin `tauri://localhost`. Firebase Auth
+blocks requests from unknown origins, so sign-in will silently fail without
+this step.
+
+1. Open the [Firebase Console](https://console.firebase.google.com/) → your project
+2. Go to **Authentication → Settings → Authorized domains**
+3. Click **Add domain** and enter `tauri://localhost`
+4. Save
+
+Without this, users will see a "Sign in unavailable in desktop mode" banner
+and the app runs in localStorage-only guest mode.
+
+---
+
 ## Required secrets
 
 Add these in **GitHub → Settings → Secrets and variables → Actions**:

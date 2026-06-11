@@ -13,7 +13,7 @@ import { readFiles } from "./lib/files";
 import { isImageEditFollowUp, routeModel } from "./lib/routing";
 import { getFreeChatsUsed, incrementFreeChats, loadAvatar, saveAvatar, saveDisplayName, saveTheme } from "./lib/storage";
 import { isMobile, uid } from "./lib/utils";
-import { updateProfile } from "./lib/firebase";
+import { isTauriApp, updateProfile } from "./lib/firebase";
 import { isSyncAvailable, pushProfile, subscribeToProfile } from "./lib/chatSync";
 import { useAuth } from "./contexts/AuthContext";
 import { useSyncedChats, useSyncedSettings } from "./hooks/useChatSync";
@@ -524,7 +524,8 @@ export default function App() {
     }
 
     // Free trial gate: anonymous users get FREE_CHAT_LIMIT chats.
-    if (!user) {
+    // Skipped in the desktop app — users run in localStorage-only guest mode.
+    if (!user && !isTauriApp) {
       const used = getFreeChatsUsed();
       if (used >= FREE_CHAT_LIMIT) {
         setTrialExpired(true);
@@ -883,7 +884,7 @@ export default function App() {
     <>
       <Aurora />
 
-      {showAuth && (
+      {showAuth && !isTauriApp && (
         <AuthScreen
           trialExpired={trialExpired}
           onClose={() => {
@@ -961,6 +962,12 @@ export default function App() {
             if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
           }}
         >
+          {isTauriApp && (
+            <div className="desktop-auth-banner">
+              Sign in unavailable in desktop mode — chats saved locally
+            </div>
+          )}
+
           <TopBar
             title={topbarTitle}
             selectedModel={selectedModel}
