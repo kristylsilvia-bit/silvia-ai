@@ -9,7 +9,10 @@
     "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
-    "lint": "node node_modules/eslint/bin/eslint.js . --ext ts,tsx --max-warnings 0"
+    "lint": "node node_modules/eslint/bin/eslint.js . --ext ts,tsx --max-warnings 0",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "dependencies": {
     "@google/genai": "^2.8.0",
