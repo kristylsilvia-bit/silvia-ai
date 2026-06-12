@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { signInEmail, signInWithGoogle, signUpEmail, resetPassword } from "../lib/firebase";
+import {
+  isTauriApp,
+  signInEmail,
+  signInWithGoogle,
+  signInWithToken,
+  signUpEmail,
+  resetPassword,
+} from "../lib/firebase";
 import { CheckIcon, SparkIcon, XIcon } from "./icons";
 
 type Mode = "signin" | "signup" | "reset";
@@ -18,6 +25,12 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
+  const deepLinkUnlistenRef = useRef<(() => void) | null>(null);
+
+  // Clean up any pending deep-link listener when the modal closes
+  useEffect(() => {
+    return () => { deepLinkUnlistenRef.current?.(); };
+  }, []);
 
   useEffect(() => {
     if (!onClose || trialExpired) return;
@@ -70,6 +83,44 @@ export default function AuthScreen({ trialExpired, onClose }: Props) {
     setError("");
     setInfo("");
     setBusy(true);
+
+    // Desktop (Tauri): open system browser → deep link callback carries custom token
+    if (isTauriApp) {
+      try {
+        const [{ open }, { listen }] = await Promise.all([
+          import("@tauri-apps/plugin-shell"),
+          import("@tauri-apps/api/event"),
+        ]);
+
+        deepLinkUnlistenRef.current?.(); // cancel any previous listener
+        const unlisten = await listen<string>("deep-link-auth", async (event) => {
+          unlisten();
+          deepLinkUnlistenRef.current = null;
+          setBusy(true);
+          try {
+            const url = new URL(event.payload);
+            const token = url.searchParams.get("token");
+            if (!token) throw new Error("No token received from sign-in.");
+            await signInWithToken(token);
+            onClose?.();
+          } catch (e) {
+            setError((e as Error).message ?? "Sign-in failed.");
+          } finally {
+            setBusy(false);
+          }
+        });
+        deepLinkUnlistenRef.current = unlisten;
+
+        await open("https://silvia-ai-chat.vercel.app/desktop-auth");
+        setInfo("Complete sign-in in your browser, then return here.");
+      } catch (e) {
+        setError(friendlyError((e as Error).message ?? "Could not open browser."));
+        setBusy(false);
+      }
+      return; // keep busy=true while waiting for the browser callback
+    }
+
+    // Web: standard Firebase popup
     try {
       await signInWithGoogle();
       onClose?.();

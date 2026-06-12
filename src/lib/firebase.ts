@@ -3,6 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithCustomToken,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -61,6 +62,11 @@ function requireAuth(): Auth {
 
 export async function signInWithGoogle(): Promise<User> {
   const result = await signInWithPopup(requireAuth(), googleProvider);
+  return result.user;
+}
+
+export async function signInWithToken(customToken: string): Promise<User> {
+  const result = await signInWithCustomToken(requireAuth(), customToken);
   return result.user;
 }
 
