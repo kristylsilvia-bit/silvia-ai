@@ -24,14 +24,13 @@
     ],
     "security": {
       "csp": null
-    },
-    "deepLinkProtocols": ["silviaai"]
+    }
   },
   "plugins": {
     "deep-link": {
-      "desktop": [
-        { "schemes": ["silviaai"] }
-      ]
+      "desktop": {
+        "schemes": ["silviaai"]
+      }
     }
   },
   "bundle": {
